@@ -173,6 +173,12 @@
     const bgAudio = document.getElementById('bgAudio');
 
     startBtn.addEventListener('click', () => {
+    
+        // Request fullscreen
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    
         startBtn.style.display = 'none';
         introVideo.style.display = 'block';
         introVideo.play();
