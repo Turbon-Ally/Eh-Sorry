@@ -46,7 +46,7 @@
             font-weight: bold;
         }
 
-        /* ---------- MAIN PAGE (your original styling) ---------- */
+        /* ---------- MAIN CONTENT ---------- */
 
         #mainContent {
             display: none;
@@ -104,7 +104,6 @@
 
         #yesBtn:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
 
         #noBtn {
@@ -114,50 +113,22 @@
             transition: all 0.15s ease-out;
         }
 
-        .celebration {
-            display: none;
+        /* ---------- CELEBRATION VIDEO ---------- */
+
+        #celebrationScreen {
             position: fixed;
             inset: 0;
-            background: rgba(102, 126, 234, 0.95);
+            background: black;
+            display: none;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            z-index: 1000;
+            z-index: 3000;
         }
 
-        .celebration.active {
-            display: flex;
-        }
-
-        .celebration h2 {
-            color: white;
-            font-size: 4em;
-            margin-bottom: 20px;
-            animation: bounce 1s infinite;
-        }
-
-        .celebration p {
-            color: white;
-            font-size: 1.5em;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            animation: confetti-fall 3s linear;
-        }
-
-        @keyframes confetti-fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
+        #celebrationVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
     </style>
@@ -165,13 +136,13 @@
 
 <body>
 
-<!-- INTRO SCREEN -->
+<!-- INTRO -->
 <div id="introScreen">
     <button id="startBtn">Click to Start 🎬</button>
     <video id="introVideo" src="eh.mp4"></video>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div id="mainContent">
     <div class="container">
         <h1>Do you like the colour blue<span class="question-mark">?</span></h1>
@@ -182,9 +153,9 @@
     </div>
 </div>
 
-<div class="celebration" id="celebration">
-    <h2>Yay! 🎉</h2>
-    <p>I knew you loved blue!</p>
+<!-- CELEBRATION VIDEO -->
+<div id="celebrationScreen">
+    <video id="celebrationVideo" src="celebration.mp4"></video>
 </div>
 
 <audio id="bgAudio">
@@ -193,12 +164,13 @@
 
 <script>
 
-    /* -------- INTRO LOGIC -------- */
+    /* -------- INTRO -------- */
 
     const startBtn = document.getElementById('startBtn');
     const introVideo = document.getElementById('introVideo');
     const introScreen = document.getElementById('introScreen');
     const mainContent = document.getElementById('mainContent');
+    const bgAudio = document.getElementById('bgAudio');
 
     startBtn.addEventListener('click', () => {
         startBtn.style.display = 'none';
@@ -206,21 +178,16 @@
         introVideo.play();
     });
 
-    const bgAudio = document.getElementById('bgAudio');
-
     introVideo.addEventListener('ended', () => {
         introScreen.style.display = 'none';
         mainContent.style.display = 'flex';
-        document.body.style.overflow = "hidden";
-    
         bgAudio.play();
     });
 
-    /* -------- YOUR ORIGINAL LOGIC -------- */
+    /* -------- BUTTON LOGIC -------- */
 
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
-    const celebration = document.getElementById('celebration');
     const container = document.querySelector('.buttons-container');
 
     function getRandomPosition() {
@@ -259,19 +226,25 @@
 
     container.addEventListener('mousemove', moveButton);
 
-    yesBtn.addEventListener('click', () => {
-        celebration.classList.add('active');
+    /* -------- YES → PLAY CELEBRATION VIDEO -------- */
 
-        for (let i = 0; i < 100; i++) {
-            setTimeout(() => {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
-            }, i * 30);
-        }
+    const celebrationScreen = document.getElementById('celebrationScreen');
+    const celebrationVideo = document.getElementById('celebrationVideo');
+
+    yesBtn.addEventListener('click', () => {
+
+        // stop background music
+        bgAudio.pause();
+        bgAudio.currentTime = 0;
+
+        // hide main page
+        mainContent.style.display = 'none';
+
+        // show celebration screen
+        celebrationScreen.style.display = 'flex';
+
+        // play celebration video
+        celebrationVideo.play();
     });
 
     noBtn.addEventListener('click', (e) => {
