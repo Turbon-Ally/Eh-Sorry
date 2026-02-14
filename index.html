@@ -187,6 +187,10 @@
     <p>I knew you loved blue!</p>
 </div>
 
+<audio id="bgAudio">
+    <source src="part1.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 
     /* -------- INTRO LOGIC -------- */
@@ -202,10 +206,14 @@
         introVideo.play();
     });
 
+    const bgAudio = document.getElementById('bgAudio');
+
     introVideo.addEventListener('ended', () => {
         introScreen.style.display = 'none';
         mainContent.style.display = 'flex';
         document.body.style.overflow = "hidden";
+    
+        bgAudio.play();
     });
 
     /* -------- YOUR ORIGINAL LOGIC -------- */
